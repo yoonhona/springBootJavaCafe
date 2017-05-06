@@ -1,6 +1,8 @@
 package com.example.article;
 
 import lombok.Data;
+
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
 /**
@@ -12,7 +14,7 @@ public class Article {
     private String title;
     private String author;
     private String body;
-    private OffsetDateTime created;
+    private LocalDateTime created;
 
     public Article(){
 
@@ -23,7 +25,7 @@ public class Article {
         this.title   = title;
         this.author  = author;
         this.body    = body;
-        this.created = OffsetDateTime.now();
+        this.created = LocalDateTime.now();
     }
 
 }

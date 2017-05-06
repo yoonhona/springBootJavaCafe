@@ -8,8 +8,11 @@ import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by nayoonho on 2017. 4. 8..
@@ -23,15 +26,16 @@ public class ArticleRepository {
     public void add(Article article) {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        String sql = "INSERT INTO ARTICLE(id, title, author, body, created)";
-        sql += " values(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ARTICLE(title, author, body, created)";
+        sql += " values(?, ?, ?, ?)";
 
         jdbcTemplate.update(sql, new Object[]{
                 article.getId(),
                 article.getTitle(),
                 article.getAuthor(),
                 article.getBody(),
-                new Date(article.getCreated().toInstant().toEpochMilli())});
+                article.getCreated()
+        });
     }
 
     public Article get(Long id){
@@ -48,9 +52,49 @@ public class ArticleRepository {
                 article.setTitle(resultSet.getString("TITLE"));
                 article.setAuthor(resultSet.getString("AUTHOR") );
                 article.setBody(resultSet.getString("BODY"));
-                article.setCreated(OffsetDateTime.now());
+                article.setCreated(
+                        LocalDateTime.of(
+                            resultSet.getDate("CREATED").toLocalDate(),
+                            resultSet.getTime("CREATED").toLocalTime()
+                        )
+                    );
                 return article;
             }
         });
+    }
+
+    public Long getCount(){
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+        return jdbcTemplate.queryForObject(
+                "select count(*) cnt from article"
+                , java.lang.Long.class
+        );
+    }
+
+    public List<Article> getList(ArticleListRequest request){
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+
+        return jdbcTemplate.query("select * from article limit ? , ?"
+                , new Object[]{request.getStartIndex(), request.getLimitArticle()}
+                , new RowMapper<Article>() {
+                    @Override
+                    public Article mapRow(ResultSet resultSet, int i) throws SQLException {
+                        Article article = new Article();
+                        article.setId(resultSet.getLong("ID"));
+                        article.setTitle(resultSet.getString("TITLE"));
+                        article.setAuthor(resultSet.getString("AUTHOR") );
+                        article.setBody(resultSet.getString("BODY"));
+                        article.setCreated(
+                                LocalDateTime.of(
+                                        resultSet.getDate("CREATED").toLocalDate(),
+                                        resultSet.getTime("CREATED").toLocalTime()
+                                )
+                        );
+                        return article;
+
+                    }
+                }
+        );
     }
 }

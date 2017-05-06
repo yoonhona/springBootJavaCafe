@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 
 /**
  * Created by nayoonho on 2017. 4. 15..
@@ -42,6 +43,21 @@ public class ArticleController {
     public String createArticle(@ModelAttribute ArticleCreateRequest request){
         service.createArticle(request);
         return "redirect:/article/" + request.getId();
+    }
+
+    @GetMapping("/articles/{pageNum}")
+    public String getArticles(Model model, @PathVariable Long pageNum){
+
+        ArticleListRequest request = new ArticleListRequest();
+        request.setCurrentPageNum(pageNum);
+
+        model.addAttribute("list", service.getArticles(request));
+        model.addAttribute("paging", request);
+
+        return "articles";
+
+
+
     }
 
 }

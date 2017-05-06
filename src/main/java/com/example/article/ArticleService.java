@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.AccessibleObject;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,5 +32,11 @@ public class ArticleService {
     public Article getArtcle(long articleId) {
 
         return repository.get(articleId);
+    }
+
+    public List<Article> getArticles(ArticleListRequest request){
+        request.setMaxArticle(repository.getCount());
+        request.setPageNum();
+        return repository.getList(request);
     }
 }
