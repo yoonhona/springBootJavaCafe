@@ -27,16 +27,19 @@ public class ArticleRepository {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         String sql = "INSERT INTO ARTICLE(title, author, body, created)";
         sql += " values(?, ?, ?, ?)";
+
         Connection connection = jdbcTemplate.getDataSource().getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
-                sql, Statement.RETURN_GENERATED_KEYS
+            sql, Statement.RETURN_GENERATED_KEYS
         );
+
         preparedStatement.setString(1, article.getTitle());
         preparedStatement.setString(2, article.getAuthor());
         preparedStatement.setString(3, article.getBody());
-        preparedStatement.setDate(4, java.sql.Date.valueOf( article.getCreated().toLocalDate()));
+        preparedStatement.setTimestamp(4, Timestamp.valueOf(article.getCreated()));
 
         preparedStatement.executeUpdate();
+
         ResultSet tableKeys = preparedStatement.getGeneratedKeys();
         tableKeys.next();
         article.setId(tableKeys.getLong(1));
