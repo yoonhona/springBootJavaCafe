@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.AccessibleObject;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +25,11 @@ public class ArticleService {
                 , request.getAuthor()
                 , request.getBody());
 
-        repository.add(article);
+        try {
+            repository.add(article);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         return article;
     }

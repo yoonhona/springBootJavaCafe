@@ -41,8 +41,8 @@ public class ArticleController {
     //
     @PostMapping("/article")
     public String createArticle(@ModelAttribute ArticleCreateRequest request){
-        service.createArticle(request);
-        return "redirect:/article/" + request.getId();
+        Article article = service.createArticle(request);
+        return "redirect:/article/" + article.getId();
     }
 
     @GetMapping("/articles/{pageNum}")

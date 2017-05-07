@@ -41,26 +41,44 @@
 
 			<#if paging.firstPageNum != 1>
                 <li>
-                <a href="/articles/#{paging.firstPageNum - 1}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                </a>
+                	<a href="/articles/#{paging.firstPageNum - 1}" aria-label="Previous">
+                		<span aria-hidden="true">&laquo;</span>
+                	</a>
+                </li>
+			<#else >
+				<li class="disabled">
+                	<a href="#" aria-label="Previous">
+                		<span aria-hidden="true">&laquo;</span>
+                	</a>
                 </li>
 			</#if>
 
 			<#list paging.firstPageNum .. paging.lastPageNum as page>
-                <li><a href="/articles/${page}">${page}</a></li>
+				<#if page != paging.currentPageNum>
+                	<li ><a href="/articles/${page}">${page}</a></li>
+				<#else>
+                	<li class="active"><a href="/articles/${page}">${page} <span class="sr-only">(current)</span> </a></li>
+				</#if>
 			</#list>
 
-			<#if paging.lastPageNum <= paging.maxPageNum >
+			<#if paging.lastPageNum < paging.maxPageNum >
                 <li>
                     <a href="/articles/#{paging.lastPageNum + 1}" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
+			<#else >
+                <li class="disabled">
+                    <a href="#" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
 			</#if>
+            <a href="/article/create" class="btn btn-default">글쓰기</a>
 			</ul>
 
 		</nav>
+
 
 	</div>
 </body>

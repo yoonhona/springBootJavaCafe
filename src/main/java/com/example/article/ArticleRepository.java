@@ -6,8 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import javax.xml.crypto.Data;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
@@ -23,19 +23,24 @@ public class ArticleRepository {
     @Autowired
     DataSource dataSource;
 
-    public void add(Article article) {
+    public void add(Article article) throws SQLException {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-
         String sql = "INSERT INTO ARTICLE(title, author, body, created)";
         sql += " values(?, ?, ?, ?)";
+        Connection connection = jdbcTemplate.getDataSource().getConnection();
+        PreparedStatement preparedStatement = connection.prepareStatement(
+                sql, Statement.RETURN_GENERATED_KEYS
+        );
+        preparedStatement.setString(1, article.getTitle());
+        preparedStatement.setString(2, article.getAuthor());
+        preparedStatement.setString(3, article.getBody());
+        preparedStatement.setDate(4, java.sql.Date.valueOf( article.getCreated().toLocalDate()));
 
-        jdbcTemplate.update(sql, new Object[]{
-                article.getId(),
-                article.getTitle(),
-                article.getAuthor(),
-                article.getBody(),
-                article.getCreated()
-        });
+        preparedStatement.executeUpdate();
+        ResultSet tableKeys = preparedStatement.getGeneratedKeys();
+        tableKeys.next();
+        article.setId(tableKeys.getLong(1));
+
     }
 
     public Article get(Long id){
@@ -75,7 +80,7 @@ public class ArticleRepository {
     public List<Article> getList(ArticleListRequest request){
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
-        return jdbcTemplate.query("select * from article limit ? , ?"
+        return jdbcTemplate.query("select * from article ORDER BY CREATED DESC  limit ? , ? "
                 , new Object[]{request.getStartIndex(), request.getLimitArticle()}
                 , new RowMapper<Article>() {
                     @Override
