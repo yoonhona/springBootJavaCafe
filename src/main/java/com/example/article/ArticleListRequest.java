@@ -21,9 +21,7 @@ public class ArticleListRequest {
 
     public void setPageNum(){
         this.maxPageNum = this.maxArticle / this.limitArticle;
-        if(this.maxArticle % this.limitArticle > 0){
-            this.maxPageNum++;
-        }
+        this.maxPageNum = this.maxArticle % this.limitArticle > 0 ? this.maxPageNum + 1 : this.maxPageNum;
 
         this.firstPageNum =  ((this.currentPageNum - 1) / limitPage ) * this.limitPage + 1;
 
