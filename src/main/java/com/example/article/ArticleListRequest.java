@@ -24,8 +24,12 @@ public class ArticleListRequest {
         if(this.maxArticle % this.limitArticle > 0){
             this.maxPageNum++;
         }
+
         this.firstPageNum =  ((this.currentPageNum - 1) / limitPage ) * this.limitPage + 1;
+
         this.lastPageNum = this.firstPageNum + this.limitPage - 1;
+        this.lastPageNum = this.lastPageNum > this.maxPageNum ? this.maxPageNum : this.lastPageNum;
+
         this.startIndex = this.currentPageNum == 1 ? 0 : ( this.currentPageNum - 1) * this.limitArticle;
 
     }
