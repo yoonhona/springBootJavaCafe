@@ -6,9 +6,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-
 /**
  * Created by nayoonho on 2017. 4. 15..
  */
@@ -17,7 +14,7 @@ import java.util.ArrayList;
 public class ArticleController {
 
     @Autowired
-    ArticleService service;
+    private ArticleService service;
 
 //    @PostConstruct // 컨트롤러 실행 시 1번 실행 됨
 //    public void setDummyArticle(){
@@ -30,12 +27,12 @@ public class ArticleController {
 
         Article article = service.getArtcle(articleId);
         model.addAttribute("article", article);
-        return "article";
+        return "pages/article";
     }
 
     @RequestMapping("/article/create")
     public String createArticleView(){
-        return "createArticle";
+        return "pages/createArticle";
     }
 
     //
@@ -54,10 +51,7 @@ public class ArticleController {
         model.addAttribute("list", service.getArticles(request));
         model.addAttribute("paging", request);
 
-        return "articles";
-
-
-
+        return "pages/articles";
     }
 
 }
