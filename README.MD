@@ -3,5 +3,4 @@
 1. 프로그램 구동 시 테스트 데이터가 존재하기 위해 prperties에 spring.datasource.initialize=true 추가와 data.sql에 테스트 데이터 생성  
 2. ArticleListRequest 클래스 생성하여 페이징에 관한 정보를 담당  
 3. 리스트에 bootstrap을 적용 
-4. 추가 보완 사항 
-	1. 리스트 외 아직 bootstrap 적용 안 함
+4. 글 쓰기 페이지에 Vue.js를 사용하여 간단한 validation 적용
