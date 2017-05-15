@@ -6,6 +6,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created by nayoonho on 2017. 4. 15..
  */
@@ -45,13 +48,21 @@ public class ArticleController {
     @GetMapping("/articles/{pageNum}")
     public String getArticles(Model model, @PathVariable Long pageNum){
 
+        return "pages/articles";
+    }
+
+    @PostMapping("/articles/{pageNum}")
+    public @ResponseBody Map<String, Object> getArticles(@PathVariable Long pageNum){
         ArticleListRequest request = new ArticleListRequest();
         request.setCurrentPageNum(pageNum);
 
-        model.addAttribute("list", service.getArticles(request));
-        model.addAttribute("paging", request);
+        Map<String, Object> result = new HashMap<>();
+        result.put("list",  service.getArticles(request));
+        result.put("paging", request);
 
-        return "pages/articles";
+        return result;
     }
+
+
 
 }
